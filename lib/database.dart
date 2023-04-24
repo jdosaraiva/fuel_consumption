@@ -4,9 +4,18 @@ import 'package:fuel_consumption/models/reabastecimento.dart';
 import 'package:fuel_consumption/models/registro_abastecimento.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:logger/logger.dart';
+
+var logger = Logger(
+  printer: PrettyPrinter(),
+);
+
+var loggerNoStack = Logger(
+  printer: PrettyPrinter(methodCount: 0),
+);
 
 void main() async {
-  print('olá');
+  loggerNoStack.i('#main');
 
   String createTableQuery = "CREATE TABLE IF NOT EXISTS reabastecimento ("
       "id INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -62,6 +71,6 @@ void main() async {
 
   List<Reabastecimento> reabastecimentos = await getReabastecimentos();
   Reabastecimento ultimoReabastecimento = reabastecimentos.last;
-  print(ultimoReabastecimento);
+  loggerNoStack.i('Último Reabastecimento : [ $ultimoReabastecimento ]');
 
 }

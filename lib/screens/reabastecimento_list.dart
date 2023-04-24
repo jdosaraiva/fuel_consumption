@@ -8,26 +8,27 @@ class ReabastecimentoList extends StatefulWidget {
   const ReabastecimentoList({Key? key}) : super(key: key);
 
   @override
-  _ReabastecimentoListState createState() => _ReabastecimentoListState();
+  ReabastecimentoListState createState() => ReabastecimentoListState();
 }
 
-class _ReabastecimentoListState extends State<ReabastecimentoList> {
+class ReabastecimentoListState extends State<ReabastecimentoList> {
   final _dao = ReabastecimentoDao();
+  bool selected = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Lista de Reabastecimentos'),
+        title: const Text('Lista de Reabastecimentos'),
       ),
       body: FutureBuilder<List<Reabastecimento>>(
         future: _dao.findAll(),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.none:
-              return Center(child: Text('Erro ao carregar a lista'));
+              return const Center(child: Text('Erro ao carregar a lista'));
             case ConnectionState.waiting:
-              return Center(child: CircularProgressIndicator());
+              return const Center(child: CircularProgressIndicator());
             case ConnectionState.active:
             case ConnectionState.done:
               if (snapshot.hasData) {
@@ -38,14 +39,58 @@ class _ReabastecimentoListState extends State<ReabastecimentoList> {
                     final reabastecimento = reabastecimentos[index];
                     final dataFormatada = DateFormat('dd/MM/yyyy')
                         .format(reabastecimento.dataReabastecimento);
-                    return ListTile(
-                      title: Text('$dataFormatada - ${reabastecimento.kilometragem} Km'),
-                      subtitle: Text('${reabastecimento.combustivel.info.descricao} - ${reabastecimento.quantidade} litros'),
+                    return GestureDetector(
+                      onLongPress: () {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text('Excluir registro'),
+                              content: Text(
+                                  'Tem certeza que deseja excluir este registro?'),
+                              actions: <Widget>[
+                                TextButton(
+                                  child: const Text('Não'),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                                TextButton(
+                                  child: const Text('Sim'),
+                                  onPressed: () async {
+                                    try {
+                                      await _dao.delete(reabastecimento.id!);
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(const SnackBar(
+                                              content: Text(
+                                                  'Registro excluído com sucesso')));
+                                      setState(() {});
+                                    } catch (e) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(const SnackBar(
+                                              content: Text(
+                                                  'Erro ao excluir registro')));
+                                    }
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                      child: ListTile(
+                        selected: selected,
+                        title: Text(
+                            '$dataFormatada - ${reabastecimento.kilometragem} Km'),
+                        subtitle: Text(
+                            '${reabastecimento.combustivel.info.descricao} - ${reabastecimento.quantidade} litros'),
+                      ),
                     );
                   },
                 );
               } else {
-                return Center(child: Text('Lista vazia'));
+                return const Center(child: Text('Lista vazia'));
               }
           }
         },

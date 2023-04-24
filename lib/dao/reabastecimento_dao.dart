@@ -1,8 +1,6 @@
-import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart';
 import 'package:fuel_consumption/models/reabastecimento.dart';
-import 'dart:io';
-import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
 
 class ReabastecimentoDao {
   static const String tableSql = '''
@@ -19,7 +17,6 @@ class ReabastecimentoDao {
   static const String _tableName = 'reabastecimento';
 
   Future<void> excluiDatabase() async {
-    Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(await getDatabasesPath(), "reabastecimento.db");
     await deleteDatabase(path);
   }
@@ -68,9 +65,24 @@ class ReabastecimentoDao {
 
   Future<List<Reabastecimento>> findAll() async {
     final Database db = await _database;
-    final List<Map<String, dynamic>> maps = await db.query(_tableName, orderBy: "id DESC");
+    final List<Map<String, dynamic>> maps =
+        await db.query(_tableName, orderBy: "id DESC");
     return List.generate(maps.length, (i) {
       return Reabastecimento.fromMap(maps[i]);
     });
+  }
+
+  Future<List<Reabastecimento>> findUltimosDois() async {
+    final Database db = await _database;
+    final res =
+        await db.rawQuery('SELECT * FROM $_tableName ORDER BY id DESC LIMIT 2');
+    return res.isNotEmpty
+        ? res.map((m) => Reabastecimento.fromMap(m)).toList()
+        : [];
+  }
+
+  Future<void> delete(int id) async {
+    final db = await _database;
+    await db.delete(_tableName, where: 'id = ?', whereArgs: [id]);
   }
 }
