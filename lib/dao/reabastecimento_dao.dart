@@ -68,7 +68,7 @@ class ReabastecimentoDao {
 
   Future<List<Reabastecimento>> findAll() async {
     final Database db = await _database;
-    final List<Map<String, dynamic>> maps = await db.query(_tableName);
+    final List<Map<String, dynamic>> maps = await db.query(_tableName, orderBy: "id DESC");
     return List.generate(maps.length, (i) {
       return Reabastecimento.fromMap(maps[i]);
     });
