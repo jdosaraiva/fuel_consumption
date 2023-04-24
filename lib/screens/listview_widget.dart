@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fuel_consumption/models/registro_abastecimento.dart';
 import 'package:intl/intl.dart';
-import 'package:fuel_consumption/utils.dart';
 
 class ListViewWidget extends StatelessWidget {
   final List<RegistroAbastecimento> dados;

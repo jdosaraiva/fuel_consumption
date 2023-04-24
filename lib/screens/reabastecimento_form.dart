@@ -8,11 +8,11 @@ class AdicionarReabastecimentoForm extends StatefulWidget {
   const AdicionarReabastecimentoForm({Key? key}) : super(key: key);
 
   @override
-  _AdicionarReabastecimentoFormState createState() =>
-      _AdicionarReabastecimentoFormState();
+  AdicionarReabastecimentoFormState createState() =>
+      AdicionarReabastecimentoFormState();
 }
 
-class _AdicionarReabastecimentoFormState
+class AdicionarReabastecimentoFormState
     extends State<AdicionarReabastecimentoForm> {
   final _formKey = GlobalKey<FormState>();
   final _dao = ReabastecimentoDao();
@@ -39,7 +39,7 @@ class _AdicionarReabastecimentoFormState
       );
       final resultado = await _dao.insert(reabastecimento);
       // Navigator.pop(context); // Fecha o formulário
-      if (resultado != null) {
+      if (resultado > 0) {
         exibirMensagem('Registro incluído com sucesso');
         _formKey.currentState!.reset();
       } else {
@@ -52,7 +52,7 @@ class _AdicionarReabastecimentoFormState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Adicionar Reabastecimento'),
+        title: const Text('Adicionar Reabastecimento'),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -64,9 +64,9 @@ class _AdicionarReabastecimentoFormState
               children: [
                 Text(
                   'Data do reabastecimento',
-                  style: Theme.of(context).textTheme.subtitle1,
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 GestureDetector(
                   onTap: () async {
                     final pickedDate = await showDatePicker(
@@ -87,35 +87,17 @@ class _AdicionarReabastecimentoFormState
                           color: Theme.of(context).colorScheme.primary),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    padding: EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(16),
                     child: Text(
                       DateFormat('dd/MM/yyyy').format(_selectedDate),
-                      style: TextStyle(fontSize: 18),
+                      style: const TextStyle(fontSize: 18),
                     ),
                   ),
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 TextFormField(
-                  keyboardType: TextInputType.numberWithOptions(decimal: true),
-                  decoration: InputDecoration(
-                    labelText: 'Quantidade de litros',
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Por favor, insira uma quantidade válida';
-                    }
-                    try {
-                      _quantidade = double.parse(value);
-                      return null;
-                    } catch (e) {
-                      return 'Por favor, insira uma quantidade válida';
-                    }
-                  },
-                ),
-                SizedBox(height: 16),
-                TextFormField(
-                  keyboardType: TextInputType.numberWithOptions(decimal: false),
-                  decoration: InputDecoration(
+                  keyboardType: const TextInputType.numberWithOptions(decimal: false),
+                  decoration: const InputDecoration(
                     labelText: 'Kilometragem',
                   ),
                   validator: (value) {
@@ -130,7 +112,25 @@ class _AdicionarReabastecimentoFormState
                     }
                   },
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
+                TextFormField(
+                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                  decoration: const InputDecoration(
+                    labelText: 'Quantidade de litros',
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor, insira uma quantidade válida';
+                    }
+                    try {
+                      _quantidade = double.parse(value);
+                      return null;
+                    } catch (e) {
+                      return 'Por favor, insira uma quantidade válida';
+                    }
+                  },
+                ),
+                const SizedBox(height: 16),
                 DropdownButtonFormField<Combustivel>(
                   value: _selectedCombustivel,
                   onChanged: (newValue) {
@@ -144,15 +144,15 @@ class _AdicionarReabastecimentoFormState
                       child: Text(combustivel.info.descricao),
                     );
                   }).toList(),
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Combustível',
-                    border: OutlineInputBorder(),
+                    border:  OutlineInputBorder(),
                   ),
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 TextFormField(
-                  keyboardType: TextInputType.numberWithOptions(decimal: false),
-                  decoration: InputDecoration(
+                  keyboardType: const TextInputType.numberWithOptions(decimal: false),
+                  decoration: const InputDecoration(
                     labelText: 'Valor',
                   ),
                   validator: (value) {
@@ -167,10 +167,10 @@ class _AdicionarReabastecimentoFormState
                     }
                   },
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: _submitForm,
-                  child: Text('Adicionar'),
+                  child: const Text('Adicionar'),
                 ),
               ],
             ),

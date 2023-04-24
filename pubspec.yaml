@@ -39,6 +39,9 @@ dependencies:
   csv: ^5.0.1
   sqflite: ^2.2.7
   path_provider: ^2.0.14
+  syncfusion_flutter_gauges: ^21.1.41
+  logger: ^1.3.0
+  path: ^1.8.3
 
 dev_dependencies:
   flutter_test:

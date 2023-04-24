@@ -1,21 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:fuel_consumption/dao/reabastecimento_dao.dart';
+import 'package:fuel_consumption/models/reabastecimento.dart';
 import 'package:fuel_consumption/models/registro_abastecimento.dart';
-import 'package:fuel_consumption/screens/listview_widget.dart';
+import 'package:fuel_consumption/screens/consumo_widget.dart';
+// import 'package:fuel_consumption/screens/listview_widget.dart';
 import 'package:fuel_consumption/screens/reabastecimento_form.dart';
 import 'package:fuel_consumption/screens/reabastecimento_list.dart';
-import 'package:intl/intl.dart';
 import 'package:fuel_consumption/utils.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:sqflite/sqflite.dart';
-import 'dart:io';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final List<RegistroAbastecimento> dados = await carregarDados();
   runApp(MyApp(dados: dados));
 }
-
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key, required this.dados}) : super(key: key);
@@ -26,7 +23,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Consumo de Combustível',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSwatch(
+            primarySwatch: Colors.lightBlue, backgroundColor: Colors.white),
         useMaterial3: true,
       ),
       home: MyHomePage(title: 'Histórico de Reabastecimento', dados: dados),
@@ -35,7 +33,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title, required this.dados})
+  MyHomePage({Key? key, required this.title, required this.dados})
       : super(key: key);
   final String title;
   final List<RegistroAbastecimento> dados;
@@ -62,15 +60,29 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    // _dao.excluiDatabase();
+
+//    _dao.excluiDatabase();
+//    initBaseFromDados();
+
     _pages = [
-      ListViewWidget(
-          dados: widget.dados,
-          selectedItem: selectedItem,
-          onItemSelected: onItemSelected),
-      ReabastecimentoList(),
-      AdicionarReabastecimentoForm(),
+      ConsumoCombustivelWidget(),
+      const ReabastecimentoList(),
+      const AdicionarReabastecimentoForm(),
     ];
+  }
+
+  void initBaseFromDados() {
+    widget.dados.reversed.forEach(insereReabastecimento);
+  }
+
+  void insereReabastecimento(RegistroAbastecimento ra) {
+    Reabastecimento reabastecimento = Reabastecimento(
+        dataReabastecimento: ra.dataReabastecimento,
+        quantidade: ra.quantidade,
+        kilometragem: ra.kilometragem,
+        combustivel: ra.combustivel,
+        valor: 0.0);
+    _dao.insert(reabastecimento);
   }
 
   @override
@@ -98,10 +110,10 @@ class _MyHomePageState extends State<MyHomePage> {
             curve: Curves.easeInOut,
           );
         },
-        items: [
+        items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.military_tech_sharp),
-            label: 'Lista',
+            label: 'Consumo',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.list),

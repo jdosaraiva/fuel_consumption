@@ -1,7 +1,9 @@
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:csv/csv.dart';
+import 'package:fuel_consumption/dao/reabastecimento_dao.dart';
 import 'package:fuel_consumption/models/registro_abastecimento.dart';
 import 'package:intl/intl.dart';
+import 'package:logger/logger.dart';
 
 Future<List<RegistroAbastecimento>> carregarDados() async {
   final csvString = await rootBundle.loadString('assets/data/dados.csv');
@@ -26,6 +28,19 @@ Future<List<RegistroAbastecimento>> carregarDados() async {
   }).toList().reversed.toList();
 }
 
+Future<double> calculaConsumo() async {
+  double consumo = 13.0;
+  ReabastecimentoDao dao = ReabastecimentoDao();
+  var reabastecimentos = await dao.findUltimosDois();
+  if (reabastecimentos.length == 2) {
+    var diferenca = reabastecimentos[0].kilometragem - reabastecimentos[1].kilometragem;
+    consumo = (diferenca / reabastecimentos[0].quantidade);
+  }
+  loggerNoStack.i('#main $reabastecimentos');
+  return consumo;
+}
+
+
 DateTime parseDataReabastecimento(List<dynamic> row) {
   final String dataString = row[0];
   final DateFormat formatter = DateFormat('dd/MM/yyyy');
@@ -35,5 +50,15 @@ DateTime parseDataReabastecimento(List<dynamic> row) {
 
 void main() {
   final listaRegistros = carregarDados();
-  print(listaRegistros);
+  loggerNoStack.i('#main $listaRegistros');
 }
+
+
+var logger = Logger(
+  printer: PrettyPrinter(),
+);
+
+var loggerNoStack = Logger(
+  printer: PrettyPrinter(methodCount: 0),
+);
+

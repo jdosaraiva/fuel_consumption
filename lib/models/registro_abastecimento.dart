@@ -1,4 +1,5 @@
-import 'package:intl/intl.dart'; // importando a biblioteca intl para formatação de data
+import 'package:intl/intl.dart';
+import 'package:logger/logger.dart'; // importando a biblioteca intl para formatação de data
 
 enum Combustivel {
   gasolina,
@@ -63,5 +64,14 @@ class RegistroAbastecimento {
 
 void main() {
   Combustivel combustivel = Combustivel.gasolina;
-  print(combustivel.info.descricao); // imprime "Gasolina"
+  loggerNoStack.i('#main $combustivel.info.descricao');
 }
+
+var logger = Logger(
+  printer: PrettyPrinter(),
+);
+
+var loggerNoStack = Logger(
+  printer: PrettyPrinter(methodCount: 0),
+);
+
