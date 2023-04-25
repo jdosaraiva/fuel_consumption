@@ -1,4 +1,6 @@
 import 'package:fuel_consumption/models/reabastecimento.dart';
+import 'package:fuel_consumption/models/registro_abastecimento.dart';
+import 'package:fuel_consumption/utils.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -26,32 +28,25 @@ class ReabastecimentoDao {
       join(await getDatabasesPath(), 'reabastecimento.db'),
       onCreate: (db, version) {
         db.execute(tableSql);
+        onDatabaseCreated(db, version);
       },
       version: 2,
     );
   }
 
   Future<void> onDatabaseCreated(Database db, int version) async {
-    //...
-
-    await db.insert(
-      'reabastecimentos',
-      {
-        'data_reabastecimento': DateTime.now().millisecondsSinceEpoch,
-        'kilometragem': 1000,
-        'combustivel': 'Gasolina',
-        'quantidade': 40,
-      },
-    );
-    await db.insert(
-      'reabastecimentos',
-      {
-        'data_reabastecimento': DateTime.now().millisecondsSinceEpoch,
-        'kilometragem': 1500,
-        'combustivel': 'Etanol',
-        'quantidade': 30,
-      },
-    );
+    List<RegistroAbastecimento> dados = await carregarDados();
+    dados.reversed.forEach((reabastecimento) async {
+      await db.insert(
+        _tableName,
+        {
+          'data_reabastecimento': reabastecimento.dataReabastecimento.toIso8601String(),
+          'kilometragem': reabastecimento.kilometragem,
+          'combustivel': reabastecimento.combustivel.name,
+          'quantidade': reabastecimento.quantidade,
+        },
+      );
+    });
   }
 
   Future<int> insert(Reabastecimento reabastecimento) async {
