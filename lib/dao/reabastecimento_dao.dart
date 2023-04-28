@@ -34,6 +34,7 @@ class ReabastecimentoDao {
     );
   }
 
+
   Future<void> onDatabaseCreated(Database db, int version) async {
     List<RegistroAbastecimento> dados = await carregarDados();
     dados.reversed.forEach((reabastecimento) async {

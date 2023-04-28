@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, required this.title, required this.dados})
+  const MyHomePage({Key? key, required this.title, required this.dados})
       : super(key: key);
   final String title;
   final List<RegistroAbastecimento> dados;
@@ -65,7 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
 //    initBaseFromDados();
 
     _pages = [
-      ConsumoCombustivelWidget(),
+      const ConsumoCombustivelWidget(),
       const ReabastecimentoList(),
       const AdicionarReabastecimentoForm(),
     ];

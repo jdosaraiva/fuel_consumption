@@ -14,7 +14,13 @@ class ReabastecimentoList extends StatefulWidget {
 class ReabastecimentoListState extends State<ReabastecimentoList> {
   final _dao = ReabastecimentoDao();
   bool selected = false;
+  int _selectedIndex = -1;
 
+  void _onItemSelected(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,13 +46,16 @@ class ReabastecimentoListState extends State<ReabastecimentoList> {
                     final dataFormatada = DateFormat('dd/MM/yyyy')
                         .format(reabastecimento.dataReabastecimento);
                     return GestureDetector(
+                      onTap: () {
+                        _onItemSelected(index);
+                      },
                       onLongPress: () {
                         showDialog(
                           context: context,
                           builder: (BuildContext context) {
                             return AlertDialog(
-                              title: Text('Excluir registro'),
-                              content: Text(
+                              title: const Text('Excluir registro'),
+                              content: const Text(
                                   'Tem certeza que deseja excluir este registro?'),
                               actions: <Widget>[
                                 TextButton(
@@ -79,12 +88,15 @@ class ReabastecimentoListState extends State<ReabastecimentoList> {
                           },
                         );
                       },
-                      child: ListTile(
-                        selected: selected,
-                        title: Text(
-                            '$dataFormatada - ${reabastecimento.kilometragem} Km'),
-                        subtitle: Text(
-                            '${reabastecimento.combustivel.info.descricao} - ${reabastecimento.quantidade} litros'),
+                      child: Container(
+                        color: _selectedIndex == index ? Colors.lightBlueAccent : null,
+                        child: ListTile(
+                          selected: selected,
+                          title: Text(
+                              '$dataFormatada - ${reabastecimento.kilometragem} Km'),
+                          subtitle: Text(
+                              '${reabastecimento.combustivel.info.descricao} - ${reabastecimento.quantidade} litros'),
+                        ),
                       ),
                     );
                   },
