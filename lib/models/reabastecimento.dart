@@ -8,6 +8,7 @@ class Reabastecimento {
   late double quantidade;
   late Combustivel combustivel;
   double? valor; // o campo valor é do tipo double e pode ser nulo
+  double? media;
 
   Reabastecimento({
     this.id,

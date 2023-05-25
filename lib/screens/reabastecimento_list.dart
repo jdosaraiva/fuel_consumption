@@ -96,6 +96,9 @@ class ReabastecimentoListState extends State<ReabastecimentoList> {
                               '$dataFormatada - ${reabastecimento.kilometragem} Km'),
                           subtitle: Text(
                               '${reabastecimento.combustivel.info.descricao} - ${reabastecimento.quantidade} litros'),
+                          trailing: reabastecimento.media != null
+                              ? Text('${reabastecimento.media!.toStringAsFixed(2)} km/l' + (reabastecimento.valor != null ? '\nR\$ ${reabastecimento.valor!.toStringAsFixed(2)}' : ''))
+                              : const Text(''),
                         ),
                       ),
                     );
