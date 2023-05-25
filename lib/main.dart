@@ -61,8 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
 
-//    _dao.excluiDatabase();
-//    initBaseFromDados();
+    // _dao.excluiDatabase();
 
     _pages = [
       const ConsumoCombustivelWidget(),
@@ -81,7 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
         quantidade: ra.quantidade,
         kilometragem: ra.kilometragem,
         combustivel: ra.combustivel,
-        valor: 0.0);
+        valor: ra.valor);
     _dao.insert(reabastecimento);
   }
 

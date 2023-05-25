@@ -45,6 +45,7 @@ class ReabastecimentoDao {
           'kilometragem': reabastecimento.kilometragem,
           'combustivel': reabastecimento.combustivel.name,
           'quantidade': reabastecimento.quantidade,
+          'valor': reabastecimento.valor
         },
       );
     });
@@ -63,9 +64,18 @@ class ReabastecimentoDao {
     final Database db = await _database;
     final List<Map<String, dynamic>> maps =
         await db.query(_tableName, orderBy: "id DESC");
-    return List.generate(maps.length, (i) {
+    var list = List.generate(maps.length, (i) {
       return Reabastecimento.fromMap(maps[i]);
     });
+
+    for (int i = 0; i < list.length; i++) {
+      if (i < (list.length - 1)) {
+        double media = (list[i].kilometragem - list[i+1].kilometragem) / list[i].quantidade;
+        list[i].media = media;
+      }
+    }
+
+    return list;
   }
 
   Future<List<Reabastecimento>> findUltimosDois() async {
